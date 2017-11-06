@@ -1646,6 +1646,7 @@ static unsigned int db_obj_vgetall(DBMap* self, DBData **buf, unsigned int max, 
 		while (node) {
 
 			if (!(node->deleted)) {
+				va_start(args, match);
 				va_list argscopy;
 				va_copy(argscopy, args);
 				if (match(node->key, node->data, argscopy) == 0) {
@@ -2035,6 +2036,7 @@ static int db_obj_vforeach(DBMap* self, DBApply func, va_list args)
 		node = db->ht[i];
 		while (node) {
 			if (!(node->deleted)) {
+				va_start(args, func);
 				va_list argscopy;
 				va_copy(argscopy, args);
 				sum += func(node->key, &node->data, argscopy);
@@ -2132,6 +2134,7 @@ static int db_obj_vclear(DBMap* self, DBApply func, va_list args)
 			} else {
 				if (func)
 				{
+					va_start(args, func);
 					va_list argscopy;
 					va_copy(argscopy, args);
 					sum += func(node->key, &node->data, argscopy);
@@ -2895,6 +2898,7 @@ void linkdb_vforeach( struct linkdb_node** head, LinkDBFunc func, va_list ap) {
 	if( head == NULL ) return;
 	node = *head;
 	while ( node ) {
+		va_start(ap, func);
 		va_list argscopy;
 		va_copy(argscopy, ap);
 		func(node->key, node->data, argscopy);
