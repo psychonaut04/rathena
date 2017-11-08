@@ -1199,9 +1199,8 @@ int mapif_parse_CreateGuild(int fd,uint32 account_id,char *name,struct guild_mem
 	mapif_guild_created(fd,account_id,g);
 	mapif_guild_info(fd,g);
 
-	if(charserv_config.log_inter)
-		inter_log("guild %s (id=%d) created by master %s (id=%d)\n",
-			name, g->guild_id, master->name, master->account_id );
+	if(charserv_config.save_log)
+		ShowInfo("guild %s (id=%d) created by master %s (id=%d)\n", name, g->guild_id, master->name, master->account_id);
 
 	return 0;
 }
@@ -1408,8 +1407,8 @@ int mapif_parse_BreakGuild(int fd,int guild_id)
 
 	mapif_guild_broken(guild_id,0);
 
-	if(charserv_config.log_inter)
-		inter_log("guild %s (id=%d) broken\n",g->name,guild_id);
+	if(charserv_config.save_log)
+		ShowInfo("guild %s (id=%d) broken\n",g->name,guild_id);
 
 	//Remove the guild from memory. [Skotlex]
 	idb_remove(guild_db_, guild_id);
@@ -1778,11 +1777,10 @@ int mapif_parse_GuildCastleDataSave(int fd, int castle_id, int index, int value)
 
 	switch (index) {
 		case 1:
-			if (charserv_config.log_inter && gc->guild_id != value) {
+			if (charserv_config.save_log && gc->guild_id != value) {
 				int gid = (value) ? value : gc->guild_id;
 				struct guild *g = (struct guild*)idb_get(guild_db_, gid);
-				inter_log("guild %s (id=%d) %s castle id=%d\n",
-				          (g) ? g->name : "??", gid, (value) ? "occupy" : "abandon", castle_id);
+				ShowInfo("guild %s (id=%d) %s castle id=%d\n", (g) ? g->name : "??", gid, (value) ? "occupy" : "abandon", castle_id);
 			}
 			gc->guild_id = value;
 			break;
